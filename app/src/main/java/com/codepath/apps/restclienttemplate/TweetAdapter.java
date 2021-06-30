@@ -51,6 +51,18 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
         return tweets.size();
     }
 
+    // Clean all elements of the recycler
+    public void clear() {
+        tweets.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<Tweet> list) {
+        tweets.addAll(list);
+        notifyDataSetChanged();
+    }
+
     // Define a ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -58,6 +70,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
         TextView tvBody;
         TextView tvScreenName;
         TextView tvRelativeTimeAgo;
+        ImageView ivTweetImage;
 
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -65,6 +78,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
             tvBody = itemView.findViewById(R.id.tvBody);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
             tvRelativeTimeAgo = itemView.findViewById(R.id.tvRelativeTimeAgo);
+            ivTweetImage = itemView.findViewById(R.id.ivTweetImage);
         }
 
         public void bind(Tweet tweet) {
@@ -72,6 +86,9 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
             tvScreenName.setText(tweet.user.screenName);
             tvRelativeTimeAgo.setText(tweet.createdAt);
             Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
+
+            if (tweet.tweetImageURL != null)
+                Glide.with(context).load(tweet.tweetImageURL).into(ivTweetImage);
         }
     }
 }
