@@ -2,6 +2,7 @@ package com.codepath.apps.restclienttemplate;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,14 +23,12 @@ public class ComposeActivity extends AppCompatActivity {
 
     public static final int MAX_TWEET_LENGTH = 280;
     public static final String TAG = "ComposeActivity";
-
     EditText etCompose;
     Button btnTweet;
     TwitterClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose);
 
@@ -38,11 +37,20 @@ public class ComposeActivity extends AppCompatActivity {
         etCompose = findViewById(R.id.etCompose);
         btnTweet = findViewById(R.id.btnTweet);
 
+        // Check if user has clicked the reply button,
+        // if not this means that the user is composing a tweet rather than replying
+        boolean hasReplied = getIntent().getBooleanExtra("hasReplied", false);
+        if (hasReplied) {
+            String repliedTo = getIntent().getStringExtra("username");
+            etCompose.setText("@" + repliedTo + " ");
+        }
+
         // Set click listener on button
         btnTweet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String tweetContent = etCompose.getText().toString();
+
                 // Check if tweet has proper character count
                 if (tweetContent.isEmpty()) {
                    Toast.makeText(ComposeActivity.this, "Sorry, your tweet cannot be empty", Toast.LENGTH_LONG).show();
@@ -52,6 +60,7 @@ public class ComposeActivity extends AppCompatActivity {
                     Toast.makeText(ComposeActivity.this, "Sorry, your tweet is too long", Toast.LENGTH_LONG).show();
                     return;
                 }
+
                 // Make API call to Twitter to publish tweet
                 client.publishTweet(tweetContent, new JsonHttpResponseHandler() {
                     @Override

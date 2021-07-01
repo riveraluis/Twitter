@@ -16,7 +16,6 @@ import java.util.Locale;
 
 @Parcel
 public class Tweet {
-
     public String body;
     public String createdAt;
     public User user;
@@ -25,6 +24,7 @@ public class Tweet {
     // Empty constructor needed by Parceler Library
     public Tweet() {}
 
+    // Initializes tweet members to appropriate fields from json
     public static Tweet fromJson(JSONObject jsonObject) throws JSONException {
         Tweet tweet = new Tweet();
         tweet.body = jsonObject.getString("text");
@@ -41,6 +41,7 @@ public class Tweet {
     }
 
     // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
+    // Responsible for formatting RelativeTimeAgo correctly
     public static String getRelativeTimeAgo(String rawJsonDate) {
         String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
         SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
@@ -54,10 +55,10 @@ public class Tweet {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
         return relativeDate;
     }
 
+    // Goes through jsonArray and adds the jsonObjects into tweets array
     public static List<Tweet> fromJsonArray(JSONArray jsonArray) throws JSONException {
         List<Tweet> tweets = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {

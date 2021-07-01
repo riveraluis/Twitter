@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="5dp">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView
         android:id="@+id/ivProfileImage"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="10dp"
@@ -22,22 +20,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginStart="10dp"
+        android:textSize="20sp"
         android:layout_marginTop="10dp"
         android:layout_toEndOf="@+id/ivProfileImage"
         android:text="@string/textview"
         tools:text="Luisrivera711" />
-
-    <TextView
-        android:id="@+id/tvBody"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvScreenName"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_toEndOf="@+id/ivProfileImage"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="10dp"
-        tools:text="this is my tweet" />
 
     <TextView
         android:id="@+id/tvRelativeTimeAgo"
@@ -47,6 +34,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        android:textSize="20sp"
         android:layout_toEndOf="@+id/tvScreenName"
         tools:text="9h" />
 
@@ -60,6 +48,19 @@
         android:layout_alignEnd="@id/tvBody"
         android:scaleType="fitCenter"
         tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tvBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivProfileImage"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/ivProfileImage"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        android:textSize="15sp"
+        tools:text="this is my tweet" />
 
     <ImageView
         android:id="@+id/ivReply"

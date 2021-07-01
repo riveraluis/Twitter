@@ -1,6 +1,10 @@
 package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Movie;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +18,13 @@ import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 
 import org.jetbrains.annotations.NotNull;
+import org.parceler.Parcels;
 
 import java.util.List;
 
-public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> {
+import static androidx.core.app.ActivityCompat.startActivityForResult;
 
+public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> {
     Context context;
     List<Tweet> tweets;
 
@@ -40,9 +46,9 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
     // Bind values based on position of element
     @Override
     public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
-        // Get the data at the position
+        // Get the data at position
         Tweet tweet = tweets.get(position);
-        // Bind the tweet with the ViewHolder
+        // Bind the tweet with ViewHolder
         holder.bind(tweet);
     }
 
@@ -57,20 +63,20 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
         notifyDataSetChanged();
     }
 
-    // Add a list of items -- change to type used
+    // Add a list of items
     public void addAll(List<Tweet> list) {
         tweets.addAll(list);
         notifyDataSetChanged();
     }
 
     // Define a ViewHolder
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView ivProfileImage;
         TextView tvBody;
         TextView tvScreenName;
         TextView tvRelativeTimeAgo;
         ImageView ivTweetImage;
+        ImageView ivReply;
 
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -79,6 +85,18 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
             tvRelativeTimeAgo = itemView.findViewById(R.id.tvRelativeTimeAgo);
             ivTweetImage = itemView.findViewById(R.id.ivTweetImage);
+            ivReply = itemView.findViewById(R.id.ivReply);
+
+            ivReply.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, ComposeActivity.class);
+                    intent.putExtra("username", tvScreenName.getText().toString());
+                    intent.putExtra("hasReplied", true);
+                    context.startActivity(intent);
+                }
+            });
+            itemView.setOnClickListener(this);
         }
 
         public void bind(Tweet tweet) {
@@ -89,6 +107,26 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
 
             if (tweet.tweetImageURL != null)
                 Glide.with(context).load(tweet.tweetImageURL).into(ivTweetImage);
+
+            ivReply.setImageResource(R.drawable.reply_arrow);
+        }
+
+        // Click on a row in Recycle view to view tweet details
+        @Override
+        public void onClick(View v) {
+            // Get position of item
+            int position = getAdapterPosition();
+            // Check if position is valid
+            if (position != RecyclerView.NO_POSITION) {
+                // Get tweet at position
+                Tweet tweet = tweets.get(position);
+                // Create intent for new activity
+                Intent intent = new Intent(context, TweetDetailsActivity.class);
+                // Serialize tweet using parceler
+                intent.putExtra("currentTweet", Parcels.wrap(tweet));
+                // Show activity
+                context.startActivity(intent);
+            }
         }
     }
 }

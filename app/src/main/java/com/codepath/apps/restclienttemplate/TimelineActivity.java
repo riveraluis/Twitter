@@ -28,7 +28,6 @@ import java.util.List;
 import okhttp3.Headers;
 
 public class TimelineActivity extends AppCompatActivity {
-
     public static final String TAG = "TimelineActivity";
     private final int REQUEST_CODE = 20;
     TwitterClient client;
@@ -46,7 +45,7 @@ public class TimelineActivity extends AppCompatActivity {
 
         // Find the recycler view
         rvTweets = findViewById(R.id.rvTweets);
-        // Init the list of tweets and adapter
+        // Initialize the list of tweets and adapter
         tweets = new ArrayList<>();
         adapter = new TweetAdapter(this, tweets);
         // Recycler view setup: layout manager and the adapter
@@ -60,12 +59,10 @@ public class TimelineActivity extends AppCompatActivity {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
                 fetchTimelineAsync(0);
             }
         });
+
         // Configure the refreshing colors
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -79,17 +76,17 @@ public class TimelineActivity extends AppCompatActivity {
         client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
-                Log.i(TAG, "onSuccess" + json.toString());
-                // Remember to CLEAR OUT old items before appending in the new ones
+                Log.i(TAG, "onSuccess to retrieve home timeline" + json.toString());
                 JSONArray jsonArray = json.jsonArray;
+                // Clear out old items before appending new ones
                 adapter.clear();
-                // ...the data has come back, add new items to your adapter...
+                // Data has come back, add new items to your adapter
                 try {
                     adapter.addAll(Tweet.fromJsonArray(jsonArray));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                // Now we call setRefreshing(false) to signal refresh has finished
+                // Call setRefreshing(false) to signal refresh has finished
                 swipeContainer.setRefreshing(false);
             }
 
@@ -100,10 +97,10 @@ public class TimelineActivity extends AppCompatActivity {
         });
     }
 
-    // Inflate the menu; this adds items to the action bar if it is present.
+    // Inflate the menu; adds items to the action bar if present.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu; adds items to the action bar if present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -113,21 +110,22 @@ public class TimelineActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.compose) {
             // Compose icon has been selected
             Intent intent = new Intent(this, ComposeActivity.class);
+            intent.putExtra("hasReplied", false);
             startActivityForResult(intent, REQUEST_CODE);
             return true;
         }
         if (item.getItemId() == R.id.btnLogout) {
-            // forget who's logged in
+            // Forget who's logged in
             TwitterApp.getRestClient(this).clearAccessToken();
             Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
-            // navigate backwards to Login screen
+            // Navigate backwards to Login screen
             Intent i = new Intent(this, LoginActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // this makes sure the Back button won't work
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // same as above
             startActivity(i);
             return true;
         }
-         return true;
+        return true;
     }
 
     @Override
@@ -135,14 +133,13 @@ public class TimelineActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             // Get data from intent (Gets the result from what user published in ComposeActivity)
             Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
-            // Update recyclerview with the new tweet
+            // Update recyclerview with new tweet
             // Modify data source of tweets
             tweets.add(0, tweet);
-            // Update the adapter
+            // Update adapter
             adapter.notifyItemInserted(0);
             rvTweets.smoothScrollToPosition(0);
         }
-
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -150,7 +147,7 @@ public class TimelineActivity extends AppCompatActivity {
         client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
-                Log.i(TAG, "onSuccess" + json.toString());
+                Log.i(TAG, "onSuccess to populate home timeline" + json.toString());
                 JSONArray jsonArray = json.jsonArray;
                 try {
                     tweets.addAll(Tweet.fromJsonArray(jsonArray));
