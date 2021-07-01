@@ -54,6 +54,7 @@ GIF created with [Kap](https://getkap.co/).
 ## Notes
 
 Describe any challenges encountered while building the app.
+- It was difficult trying to find where to change UI colors of timeline
 
 ## Open-source libraries used
 
